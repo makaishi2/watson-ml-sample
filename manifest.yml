@@ -1,0 +1,10 @@
+---
+declared-services:
+  my-discovery-service:
+    label: discovery
+    plan: free
+applications:
+- name: discovery-news
+  command: npm start
+  path: .
+  memory: 128M

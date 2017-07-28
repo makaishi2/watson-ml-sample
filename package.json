@@ -1,0 +1,20 @@
+{
+  "name": "news-sample",
+  "version": "1.0.0",
+  "description": "discovery news sample",
+  "main": "app.js",
+  "dependencies": {
+    "cfenv": "^1.0.4",
+    "ejs": "^2.5.6",
+    "express": "^4.15.3",
+    "fs": "0.0.1-security",
+    "watson-developer-cloud": "^2.32.0"
+  },
+  "repository": {},
+  "license": "Apache-2.0",
+  "author": "M. Akaishi",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js"
+  }
+}

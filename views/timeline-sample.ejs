@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Discovery News 時系列グラフ</title>
+
+<style type="text/css">
+text { font-size: 12px; font-weight: bold; fill: black; }
+a { font-size: 12px;}
+.axis path,
+.axis line{ fill: none; stroke: black; }
+.tick text{ font-size: 10px; fill: black; }
+.line{ fill: none; stroke-width: 2px; }
+div.tooltip { position: absolute; text-align: center; width: 60px; height: 28px;
+    padding: 2px; font: 10px sans-serif; background: lightsteelblue;
+    border: 0px; border-radius: 8px; pointer-events: none; }
+#top_area { overflow:hidden; width:100%; }
+#gr_area { float:left; width:50%; }
+#url_area { float:left; width:50%; }
+</style>
+
+<link type="text/css" href="stylesheets/jquery-ui.css" rel="stylesheet" />
+
+<script src="js/d3.v3.min.js" charset="utf-8"></script>
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/jquery.ui.datepicker-ja.min.js"></script>
+<script src="js/moment.js"></script>
+</head>
+
+<body>
+
+<script>
+// グローバル変数定義
+var svg;
+var xScale;
+var yScale;
+var div;
+var data_set_pos;
+var data_set_neg;
+var data_set_neu;
+var title_max_length = 100;
+var news_list_max = 20;
+
+function conv_date( date_str ) {
+    return moment( date_str, "YYYY/MM/DD").unix();
+}
+
+function format_unixtime( unixtime ) {
+    return unixtime;
+}
+
+function clear_urls(headline) {
+    var element = document.getElementById("url_area");
+    while (element.firstChild) {
+        element.removeChild(element.firstChild);
+    }
+    var t = document.createTextNode(headline);
+    element.appendChild(t);
+    element.appendChild(document.createElement('br'));
+}
+
+function call_discovery_query( data, success, error ) {
+    $.ajax({
+        type: "GET", 
+        url:  "/query", 
+        data: data,
+        success: success,
+        error: error
+        });
+}
+
+function get_sentiment_callback(msg) {
+//    console.log(msg);
+    var list = msg.aggregations[0].results;
+    var dataset = [];
+    $.each(list,function(index,val){
+        var key = val.key;
+        var list2 = val.aggregations[0].results;
+        var data_set2=[];
+        $.each(list2,function(index2,val2){
+            var format_date = format_unixtime(val2.key);
+            var item2 = { date: format_date, count: val2.matching_results };
+                data_set2.push(item2);
+        });
+        if ( key == "positive" ) {
+            data_set_pos = data_set2;
+        }
+        if ( key == "negative" ) {
+            data_set_neg = data_set2;
+        }
+        if ( key == "neutral" ) {
+            data_set_neu = data_set2;
+        }
+    });
+    draw_graph();
+}    
+
+function get_filter_str() {
+    var start_date_str = $('#query_start_date').val();
+    var end_date_str = $('#query_end_date').val();
+    var start_unixtime = "";
+    var end_uinxtime = "";
+    if ( start_date_str  ) {
+        start_unixtime = conv_date(start_date_str);
+    }
+    if ( end_date_str  ) {
+        end_unixtime = conv_date(end_date_str);
+    }
+    var filter_str = "";
+    if ( start_date_str ) {
+        if ( end_date_str  ) {
+            filter_str = "blekko.chrondate>" + start_unixtime + ",blekko.chrondate<" + end_unixtime;
+        } else {
+            filter_str = "blekko.chrondate>" + start_unixtime;
+        }
+    } else { if ( end_date_str ) {
+                filter_str = "blekko.chrondate<" + end_unixtime;
+            }
+    }
+    console.log( "filter_str: " + filter_str);
+    return filter_str; 
+}
+
+function query_sentiment() {
+    var data = {
+        query: $('#query_key').val(),
+        count: 0,
+        filter: get_filter_str(),
+        aggregation: "term(docSentiment.type).timeslice(blekko.chrondate,1day)"
+    };
+    call_discovery_query( data, 
+            get_sentiment_callback, 
+            function(XMLHttpRequest,textStatus,errorThrown){alert('error');} );
+}
+
+function get_news_callback(msg) {
+    var items = msg.results;
+    var prev_title = "";
+    var counter = 0;
+    $.each(items,function(index,val){
+        var title = val.title.substr(0, title_max_length);
+        console.log( "index: " + index + "  title: " +  title + "  url: " + val.url );
+        if ( title == prev_title ) {
+            return true;
+        }
+        counter = counter + 1;
+        if ( counter > news_list_max ) {
+            return false;
+        }
+        var x = document.createElement("A");
+        var t = document.createTextNode(title);
+        prev_title = title;
+        x.setAttribute("href", val.url);
+        x.appendChild(t);
+        document.getElementById("url_area").appendChild(x);
+        document.getElementById("url_area").appendChild(document.createElement('br'));
+    });
+}
+
+function get_news(key, date) {
+    console.log("key: " + key + "  date: " + date);
+    var yyyymmdd = moment(date).format("YYYYMMDD");
+    var formated_date = moment(date).format("YYYY-MM-DD");
+    var filter_str = "yyyymmdd:" + yyyymmdd + ",docSentiment.type:" + key ;
+    var headline = "date: " + formated_date + "   sentiment: " + key;
+    console.log(filter_str);
+    clear_urls(headline);
+    var data = {
+            query: $('#query_key').val(),
+            count: 50,
+            filter: filter_str,
+            return: "title,url"
+    };
+    call_discovery_query(data, get_news_callback);
+}
+
+function draw_points(data_set, sentiment) {
+    svg.selectAll("dot")
+        .data(data_set)
+        .enter().append("circle")
+        .attr("r", 3)
+        .attr("cx", function(d) { return xScale(d.date); })
+        .attr("cy", function(d) { return yScale(d.count); })
+        .on("click", function(d) { get_news(sentiment, d.date); })
+        .on("mouseover", function(d) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div.html(moment(d.date).format("YY-MM-DD") + "<br/>"  + d.count)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(d) {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+}
+
+function draw_graph() {
+    d3.select("#gr_area").selectAll("svg").remove();
+    clear_urls("");
+    var margin = {top: 20, right: 100, bottom: 30, left: 100},
+    width = 600 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+    svg = d3.select("#gr_area").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+    var x_max = d3.max(data_set_pos, function(d){ return d.date; });
+    var x_min = d3.min(data_set_pos, function(d){ return d.date; });
+    xScale = d3.scale.linear()
+        .domain([x_min, x_max])
+        .range([0, width]);
+        
+    var y_max_pos = d3.max(data_set_pos, function(d){ return d.count; });
+    var y_max_neg = d3.max(data_set_neg, function(d){ return d.count; });
+    var y_max = Math.max( y_max_pos, y_max_neg);
+    var y_min = 0;
+    yScale = d3.scale.linear()
+        .domain([y_min, y_max])
+        .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient("bottom")
+        .ticks(4)
+        .tickFormat( function(d) { return moment(d).format("YYYY-MM-DD"); })
+
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left")
+
+    var line = d3.svg.line()
+        .x(function(d) { return xScale(d.date); })
+        .y(function(d) { return yScale(d.count); });
+
+    div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .append("text")
+        .attr("y", -5)
+        .attr("x", -100)
+        .text("query: " + $('#query_key').val() ); 
+
+    svg.append("path")
+        .datum(data_set_pos)
+        .attr({ class: "line", "d": line, "stroke": "blue"});
+    draw_points(data_set_pos, "positive");       
+
+    svg.append("path")
+        .datum(data_set_neg)
+        .attr({ class: "line", "d": line, "stroke": "red"});        
+    draw_points(data_set_neg, "negative");       
+
+    svg.append("path")
+        .datum(data_set_neu)
+        .attr({ class: "line", "d": line, "stroke": "yellow"});        
+    draw_points(data_set_neu, "neutral");       
+
+}
+
+$(function(){
+    $('#send').click(query_sentiment) 
+});
+$(function(){
+    $("#query_start_date").datepicker();
+});
+$(function(){
+    $("#query_end_date").datepicker();
+});
+
+</script>
+
+<h2>Discoveryデモ</h2>
+<h3>Discovery News評判分析利用例</h3>
+<hr>
+検索条件<br>
+query:
+<input text id="query_key" name="query_key"" value="IBM Watson" size=80><br>
+開始日 <input text id="query_start_date" name="query_start_date" value="2017/04/01" size=10>
+終了日 <input text id="query_end_date" name="query_end_date" value="2017/05/31" size=10><br>
+<input type="submit"  id="send" value="検索">
+<hr>
+<div id="top_area" name="top_area">
+    <div id="gr_area" name="gr_area"></div>
+    <div id="url_area" name="url_area"></div>
+</div>    
+</body>
+</html>
