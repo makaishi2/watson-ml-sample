@@ -21,10 +21,16 @@
 
       注意: Cloud Foundaryのバージョンは最新として下さい。
 
+### Discoveryサービスの作成
+Bluemixにログインし、無料のDiscovery Serviceを discovery-service-1 という名前で作成します。  
+  
+![](readme_images/crt-discovery-step1.png)  
+![](readme_images/crt-discovery-step2.png)  
+
 ### ソースのダウンロード
 カレントディレクトリのサブディレクトリにソースはダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしておきます。
 
-    git https://git.ng.bluemix.net/akaishi/discovery-news-aka1.git
+    git clone https://git.ng.bluemix.net/akaishi/discovery-news-aka1.git
 
 ### Bluemix環境へのデプロイ
 cf loginコマンドではemailとpasswordを聞かれるのでbluemix登録時のemailアドレスとパスワードを指定します。  
@@ -32,6 +38,7 @@ cf pushコマンドで指定する<your_appl_name>はBluemix上のインスタ�
 
     cd conv-ui-sample
     cf login
+    cf create-service discovery free my-discovery-service
     cf push <your_appl_name>
 
 
