@@ -22,13 +22,14 @@
       注意: Cloud Foundaryのバージョンは最新として下さい。
 
 ### Discoveryサービスの作成
-Bluemixにログインし、無料のDiscovery Serviceを discovery-service-1 という名前で作成します。  
+Bluemixにログインし、サービスの中からDiscovery Serviceを選んで作成します。  
   
 ![](readme_images/crt-discovery-step1.png)  
   
+サービス名は discovery-service-1を指定し、プランはデフォルトの無料のものを選択します。  
   
 ![](readme_images/crt-discovery-step2.png)  
-
+  
 ### ソースのダウンロード
 カレントディレクトリのサブディレクトリにソースはダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしておきます。
 
