@@ -1,8 +1,15 @@
-# Conversation サンプルアプリケーション
-このアプリケーションはWatson Conversationで作ったDialogを簡単に動かすためのものです。
+# Discovery News サンプルアプリケーション
+このアプリケーションはWatson Discovery Newsの機能を簡単に確認するためのものです。  
+
+* 次のようなことが可能です
+    * 検索条件に会社名を入力し、その会社に関係するニュースの評判分析を行います
+    * 検索時は、開始日、終了日を条件として指定できます
+    * 検索結果は、日ごとに集計した好意的(青)、否定的(赤)、中立(黄色)の3本の折れ線グラフで表示されます
+    * グラフ上の点にマウスポインタをあわせてクリックすると、評判の根拠になった記事へのリンクが右側に表示されます
+    * 右側のリンクをクリックすると、元記事そのものに飛ぶことができます
 
 デモ画面  
-![デモ](readme_images/conv-sample2.gif)
+![デモ](readme_images/news-demo.gif)
 
 ## 事前準備
 
@@ -14,10 +21,31 @@
 
       注意: Cloud Foundaryのバージョンは最新として下さい。
 
+### Discoveryサービスの作成
+Bluemixにログインし、サービスの中からDiscovery Serviceを選んで作成します。  
+  
+![](readme_images/crt-discovery-step1.png)  
+  
+サービス名は discovery-service-1を指定し、プランはデフォルトの無料のものを選択します。  
+  
+![](readme_images/crt-discovery-step2.png)  
+  
+サービスが作成されて下記の画面が現れたら、"Launch tool"ボタンをクリックします。  
+  
+![](readme_images/launch-discovery.png)  
+  
+Discovey管理画面が表示されたら、"Discovey News"をクリックします。
+
+![](readme_images/discovery-top.png)  
+  
+下の画面が表示されたら、API Informationの欄にある3つのIDをエディタなどにコピペしておきます。
+  
+![](readme_images/discovery-prop.png)  
+  
 ### ソースのダウンロード
 カレントディレクトリのサブディレクトリにソースはダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしておきます。
 
-    git clone https://git.ng.bluemix.net/akaishi/conv-ui-sample.git
+    git clone https://git.ng.bluemix.net/akaishi/discovery-news-aka1.git
 
 ### Bluemix環境へのデプロイ
 cf loginコマンドではemailとpasswordを聞かれるのでbluemix登録時のemailアドレスとパスワードを指定します。  
@@ -25,28 +53,9 @@ cf pushコマンドで指定する<your_appl_name>はBluemix上のインスタ�
 
     cd conv-ui-sample
     cf login
+    cf create-service discovery free my-discovery-service
     cf push <your_appl_name>
 
-### 環境変数の確認
-以下の3つの環境変数の値を調べます。
-  
- CONVERSATION_USERNAME  
- CONVERSATION_PASSWORD  
- WORKSPACE_ID  
-  
-USERNAMEとPASSWORDは、Conversationサービス管理画面から「資格情報」「資格情報の表示」を選択  
-  
-![userid](readme_images/conv-userid.png)
-  
-WORDSPACE_IDは、Conversaionサービス管理画面から「Launch Tool」ワークスペースごとの詳細メニューから
-「View Deatails」を選択  
-  
-![workspace](readme_images/conv-workspaceid.png)
-  
-### 環境変数のセット
-３つの環境変数の値をCloudFoundary管理画面から、「ランタイム」「環境変数」を選択して設定します。
-  
-![setting](readme_images/env-settings.png)
 
 ### アプリケーションのURLと起動
 環境変数を保存すると自動的に再構成が動き出します。  
@@ -54,10 +63,6 @@ WORDSPACE_IDは、Conversaionサービス管理画面から「Launch Tool」ワ�
 
 ![call-appl](readme_images/call-appl.png)
 
-
-[node_js]: https://nodejs.org/#download
 [cloud_foundry]: https://github.com/cloudfoundry/cli#downloads
 [git]: https://git-scm.com/downloads
-[npm_link]: https://www.npmjs.com/
 [sign_up]: https://bluemix.net/registration
-[demo]: https://git.ng.bluemix.net/akaishi/conv-ui-sample/blob/master/readme_images/conv-sample2.gif
