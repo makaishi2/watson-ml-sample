@@ -4,4 +4,4 @@ applications:
   path: .
   memory: 128M
   services:
-  - discovery-service1
+  - discovery-service-1
