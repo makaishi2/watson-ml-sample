@@ -9,7 +9,7 @@
     * 右側のリンクをクリックすると、元記事そのものに飛ぶことができます
 
 デモ画面  
-![デモ](readme_images/conv-sample2.gif)
+![デモ](readme_images/news-demo.gif)
 
 ## 事前準備
 
