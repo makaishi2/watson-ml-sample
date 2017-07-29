@@ -57,6 +57,9 @@ cf pushコマンドで指定する<your_appl_name>はBluemix上のインスタ�
 
 ### 環境変数の設定
 
+    cf set-env <your_appl_name> environment_id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  
+    cf set-env <your_appl_name> collection_id  xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  
+    cf restage <your_appl_name>
 
 ### アプリケーションのURLと起動
 環境変数を保存すると自動的に再構成が動き出します。  
