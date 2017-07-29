@@ -4,7 +4,6 @@ declared-services:
     label: discovery
     plan: free
 applications:
-- name: discovery-news
-  command: npm start
+- command: npm start
   path: .
   memory: 128M
