@@ -45,13 +45,13 @@ Discovey管理画面が表示されたら、"Discovey News"をクリックしま
 ### ソースのダウンロード
 git cloneコマンドは、カレントディレクトリのサブディレクトリにソースがダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしてから下記のコマンドを実行します。
 
-    git clone https://git.ng.bluemix.net/akaishi/discovery-news-aka1.git
+    git clone https://git.ng.bluemix.net/akaishi/discovery-news-smp.git
 
 ### Bluemix環境へのデプロイ
 cf loginコマンドではemailとpasswordを聞かれるのでbluemix登録時のemailアドレスとパスワードを指定します。  
-cf pushコマンドで指定する<your_appl_name>はBluemix上のインスタンス名であると同時に、インターネット上のURL名にもなるので、ユニークなものを指定します。  
+cf pushコマンドで指定するyour_appl_nameはBluemix上のインスタンス名であると同時に、インターネット上のURL名にもなるので、ユニークなものを指定します。  
 
-    cd discovery-news-aka1
+    cd discovery-news-smp
     cf login
     cf push <your_appl_name>
 
