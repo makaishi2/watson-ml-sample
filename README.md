@@ -25,6 +25,7 @@
 Bluemixにログインし、無料のDiscovery Serviceを discovery-service-1 という名前で作成します。  
   
 ![](readme_images/crt-discovery-step1.png)  
+  
 ![](readme_images/crt-discovery-step2.png)  
 
 ### ソースのダウンロード
