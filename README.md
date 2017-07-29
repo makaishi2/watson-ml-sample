@@ -43,7 +43,7 @@ Discovey管理画面が表示されたら、"Discovey News"をクリックしま
 ![](readme_images/discovery-prop.png)  
   
 ### ソースのダウンロード
-git cloneコマンドは、カレントディレクトリのサブディレクトリにソースはダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしてから下記のコマンドを実行します。
+git cloneコマンドは、カレントディレクトリのサブディレクトリにソースがダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしてから下記のコマンドを実行します。
 
     git clone https://git.ng.bluemix.net/akaishi/discovery-news-aka1.git
 
@@ -63,8 +63,7 @@ cf pushコマンドで指定する<your_appl_name>はBluemix上のインスタ�
     cf restage <your_appl_name>
 
 ### アプリケーションのURLと起動
-環境変数を保存すると自動的に再構成が動き出します。  
-しばらくしてこれが完了したら、下記の画面で該当するCloud Foundaryアプリケーションの「経路」のリンクをクリックするとアプリケーションが起動されます。
+restageコマンドによる再構成が完了したら、下記の画面で該当するCloud Foundaryアプリケーションの「経路」のリンクをクリックするとアプリケーションが起動されます。
 
 ![call-appl](readme_images/call-appl.png)
 
