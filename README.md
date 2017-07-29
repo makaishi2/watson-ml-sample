@@ -56,6 +56,7 @@ cf pushコマンドで指定する<your_appl_name>はBluemix上のインスタ�
     cf push <your_appl_name>
 
 ### 環境変数の設定
+事前にコピペした情報を使って下記のコマンドを発行し、環境変数の設定を行います。　　
 
     cf set-env <your_appl_name> environment_id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  
     cf set-env <your_appl_name> collection_id  xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  
