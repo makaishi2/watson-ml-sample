@@ -52,6 +52,7 @@ cf loginコマンドではemailとpasswordを聞かれるのでbluemix登録時�
 cf pushコマンドで指定するyour_appl_nameはBluemix上のインスタンス名であると同時に、インターネット上のURL名にもなるので、ユニークなものを指定します。  
 
     cd discovery-news-smp
+    cf api https://api.ng.bluemix.net/
     cf login
     cf push <your_appl_name>
 
