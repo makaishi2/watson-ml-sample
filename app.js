@@ -1,44 +1,44 @@
 var express = require("express");
-var cfenv = require('cfenv');
 var app = express();
 
+// env.jsファイルがある場合は、この設定をprocess.envにマージする
 var fs = require('fs');
-var watson = require('watson-developer-cloud');
-var appEnv = cfenv.getAppEnv();
-var services = appEnv.getServices();
-var serviceCredentials;
-var environment_id;
-var collection_id;
-
 if (fs.existsSync('./env.js')) {
     Object.assign(process.env, require('./env.js'));
-    
 }
-console.log("===process.env===");
-console.log(process.env);
-var app_env = cfenv.getAppEnv().services;
-console.log("===app_env===")+
-console.log(app_env);
-environment_id = process.env.environment_id ? process.env.environment_id : app_env.environment_id;
-collection_id =  process.env.collection_id ? process.env.collection_id : app_env.collection_id;
 
-var discovery_credentials = cfenv.getAppEnv().getServiceCreds('discovery-service-1');
-console.log("===discovery_credentials===");
-console.log(discovery_credentials);
+// appEnvの取得 (app.listenでポート指定の際に必要となる)
+var cfenv = require('cfenv');
+var appEnv = cfenv.getAppEnv();
+
+// environment_id, collection_idの取得 (Discovery API呼出しの際に必要になる)
+var environment_id = process.env.environment_id ? process.env.environment_id : appEnv.services.environment_id;
+var collection_id =  process.env.collection_id ? process.env.collection_id : appEnv.services.collection_id;
+
+// Discoveryインスタンスの生成
+var watson = require('watson-developer-cloud');
+var discovery_credentials = appEnv.getServiceCreds('discovery-service-1');
 discovery = new watson.DiscoveryV1({
     version_date: '2017-04-27',
     username: discovery_credentials.username,
     password: discovery_credentials.password
 });
 
+// httpポートのlisten(ポート番号は環境変数で指定されたものを利用)
 app.listen(appEnv.port, '0.0.0.0', function() {
   console.log("server starting on " + appEnv.url);
 });
 
+// 静的HTMLパスの指定
 app.use(express.static(__dirname + '/public'));
+
+// "/query"のパスが指定された場合、Discovery API呼出しを行う
 app.get("/query", function(req, res, next){
+
+// req.queryに指定されているパラメータにenvironment_id, collection_idを追加する
     var query = Object.assign({environment_id: environment_id,
                                 collection_id: collection_id}, req.query);
+// diacovery API呼出し
     discovery.query( query,
     function(error, data) {
         if ( data ) {
