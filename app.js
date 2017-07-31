@@ -10,33 +10,24 @@ var serviceCredentials;
 var environment_id;
 var collection_id;
 
-if (Object.keys(services).length === 0 && services.constructor === Object) {
-    if (fs.existsSync('./env.js')) {
-        Object.assign(process.env, require('./env.js'));
-    }
-    serviceCredentials = JSON.parse(process.env.VCAP_SERVICES);
-    console.log( serviceCredentials.discovery[0]); 
-    console.log( serviceCredentials); 
-    discovery = new watson.DiscoveryV1({
-        version_date: serviceCredentials.discovery[0].credentials.version,
-        username: serviceCredentials.discovery[0].credentials.username,
-        password: serviceCredentials.discovery[0].credentials.password
-    });
-    environment_id = serviceCredentials.environment_id;
-    collection_id =  serviceCredentials.collection_id;
-} else {
-    serviceCredentials = null;
-    discovery = new watson.DiscoveryV1({
-        version_date: "2016-12-01",
-        username: process.env.discovery_username,
-        password: process.env.discovery_password
-    });
-    environment_id = process.env.environment_id;
-    collection_id = process.env.collection_id;
+if (fs.existsSync('./env.js')) {
+    Object.assign(process.env, require('./env.js'));
+    
 }
+var app_env = cfenv.getAppEnv().services;
+console.log(app_env);
+environment_id = app_env.environment_id;
+collection_id =  app_env.collection_id;
+
+var discovery_credentials = cfenv.getAppEnv().getServiceCreds('discovery-service-1');
+console.log(discovery_credentials);
+discovery = new watson.DiscoveryV1({
+    version_date: discovery_credentials.version,
+    username: discovery_credentials.username,
+    password: discovery_credentials.password
+});
 
 app.listen(appEnv.port, '0.0.0.0', function() {
-  // print a message when the server starts listening
   console.log("server starting on " + appEnv.url);
 });
 
