@@ -41,12 +41,6 @@ app.listen(appEnv.port, '0.0.0.0', function() {
 });
 
 app.use(express.static(__dirname + '/public'));
-app.set('view engine', 'ejs');
-
-app.get("/", function(req, res, next){
-    res.render("timeline-sample", {});
-});
-
 app.get("/query", function(req, res, next){
     var query = Object.assign({environment_id: environment_id,
                                 collection_id: collection_id}, req.query);
