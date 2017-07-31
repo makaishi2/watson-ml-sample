@@ -14,16 +14,17 @@ if (fs.existsSync('./env.js')) {
     Object.assign(process.env, require('./env.js'));
     
 }
+console.log("===process.env===");
 console.log(process.env);
 var app_env = cfenv.getAppEnv().services;
+console.log("===app_env===")+
 console.log(app_env);
-environment_id = app_env.environment_id;
-collection_id =  app_env.collection_id;
+environment_id = process.env.environment_id ? process.env.environment_id : app_env.environment_id;
+collection_id =  process.env.collection_id ? process.env.collection_id : app_env.collection_id;
 
 var discovery_credentials = cfenv.getAppEnv().getServiceCreds('discovery-service-1');
+console.log("===discovery_credentials===");
 console.log(discovery_credentials);
-var discovery_env = cfenv.getAppEnv().getService('discovery-service-1');
-console.log(discovery_env);
 discovery = new watson.DiscoveryV1({
     version_date: '2017-04-27',
     username: discovery_credentials.username,
