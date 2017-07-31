@@ -24,7 +24,7 @@ console.log(discovery_credentials);
 var discovery_env = cfenv.getAppEnv().getService('discovery-service-1');
 console.log(discovery_env);
 discovery = new watson.DiscoveryV1({
-    version_date: discovery_credentials.version,
+    version_date: '2017-04-27',
     username: discovery_credentials.username,
     password: discovery_credentials.password
 });
