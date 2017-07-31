@@ -14,6 +14,7 @@ if (fs.existsSync('./env.js')) {
     Object.assign(process.env, require('./env.js'));
     
 }
+console.log(process.env);
 var app_env = cfenv.getAppEnv().services;
 console.log(app_env);
 environment_id = app_env.environment_id;
