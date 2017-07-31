@@ -2,18 +2,19 @@ var express = require("express");
 var app = express();
 
 // env.jsファイルがある場合は、この設定をprocess.envにマージする
+// ローカル環境でのテスト用
 var fs = require('fs');
 if (fs.existsSync('./env.js')) {
     Object.assign(process.env, require('./env.js'));
 }
 
+// environment_id, collection_idの取得 (Discovery API呼出しの際に必要になる)
+var environment_id = process.env.environment_id;
+var collection_id =  process.env.collection_id;
+
 // appEnvの取得 (app.listenでポート指定の際に必要となる)
 var cfenv = require('cfenv');
 var appEnv = cfenv.getAppEnv();
-
-// environment_id, collection_idの取得 (Discovery API呼出しの際に必要になる)
-var environment_id = process.env.environment_id ? process.env.environment_id : appEnv.services.environment_id;
-var collection_id =  process.env.collection_id ? process.env.collection_id : appEnv.services.collection_id;
 
 // Discoveryインスタンスの生成
 var watson = require('watson-developer-cloud');
@@ -33,6 +34,7 @@ app.listen(appEnv.port, '0.0.0.0', function() {
 app.use(express.static(__dirname + '/public'));
 
 // "/query"のパスが指定された場合、Discovery API呼出しを行う
+// この呼出しはブラウザ側のajax関数から行われる
 app.get("/query", function(req, res, next){
 
 // req.queryに指定されているパラメータにenvironment_id, collection_idを追加する
