@@ -5,7 +5,6 @@
   "main": "app.js",
   "dependencies": {
     "cfenv": "^1.0.4",
-    "ejs": "^2.5.6",
     "express": "^4.15.3",
     "fs": "0.0.1-security",
     "watson-developer-cloud": "^2.32.0"
