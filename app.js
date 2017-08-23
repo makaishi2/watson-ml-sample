@@ -39,15 +39,11 @@ app.get("/query", function(req, res, next){
 
 // req.queryに指定されているパラメータにenvironment_id, collection_idを追加する
     var query = Object.assign({environment_id: environment_id,
-                                collection_id: collection_id}, req.query);
+                                 collection_id: collection_id}, req.query);
 // diacovery API呼出し
     discovery.query( query,
-    function(error, data) {
-        if ( data ) {
-            res.send(data);
-        } else {
-            console.log(error);
-            res.send(error);
-        }
-    });
+        function(error, data) {
+            if ( data ) {res.send(data);} 
+            else {console.log(error); res.send(error);}
+        });
 });

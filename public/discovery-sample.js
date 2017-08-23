@@ -38,7 +38,7 @@ function call_discovery_query( data, success, error ) {
 }
 
 function get_sentiment_callback(msg) {
-//    console.log(msg);
+    console.log(msg);
     var list = msg.aggregations[0].results;
     var dataset = [];
     $.each(list,function(index,val){
