@@ -12,62 +12,109 @@
 ![デモ](readme_images/news-demo.gif)
 
 ## 事前準備
+### Bluemixアカウントの準備
+   [Bluemixアカウントを作る][sign_up] か、あるいは既存のBluemixアカウントを利用します。
+ 
+### 前提ソフトの導入
+ 次の前提ソフトを導入します。Node.jsはローカルで動かす場合に必要となります。 
+   
+  [gitコマンドラインツール][git]   
+  [Cloud Foundryコマンドラインツール][cloud_foundry]  
+  [Node.js][node_js] 
 
-* Bluemixアカウントの準備
-    * [Bluemixアカウントを作る][sign_up] か、あるいは既存のBluemixアカウントを利用します。
-* 次の前提ソフトを導入します。
-    *  [git][git] コマンドラインツール
-    *  [Cloud Foundry][cloud_foundry] コマンドラインツール
+  注意: Cloud Foundaryのバージョンは最新として下さい。
 
-      注意: Cloud Foundaryのバージョンは最新として下さい。
+### ソースのダウンロード
+git cloneコマンドは、カレントディレクトリのサブディレクトリにソースがダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしてから下記のコマンドを実行します。
+
+```
+git clone https://git.ng.bluemix.net/akaishi/discovery-news-smp.git
+```
 
 ### Discoveryサービスの作成
 Bluemixにログインし、サービスの中からDiscovery Serviceを選んで作成します。  
   
 ![](readme_images/crt-discovery-step1.png)  
   
-サービス名は discovery-service-1を指定し、プランはデフォルトの無料のものを選択します。  
+サービス名は任意のものを(デフォルトで可)、プランはデフォルトの無料のものを選択します。  
   
 ![](readme_images/crt-discovery-step2.png)  
   
-サービスが作成されて下記の画面が現れたら、"Launch tool"ボタンをクリックします。  
+サービスが作成されて下記の画面が現れたら、 「サービス資格情報」「資格情報の表示」をクリックし、ユーザーIDとパスワードをテキストエディタなどにコピーします。
   
-![](readme_images/launch-discovery.png)  
+![](readme_images/discovery-info.png)  
   
-Discovey管理画面が表示されたら、"Discovey News"をクリックします。
+## ローカル環境へのデプロイ
 
-![](readme_images/discovery-top.png)  
-  
-下の画面が表示されたら、API Informationの欄にある3つのIDをエディタなどにコピペしておきます。
-  
-![](readme_images/discovery-prop.png)  
-  
-### ソースのダウンロード
-git cloneコマンドは、カレントディレクトリのサブディレクトリにソースがダウンロードされるので、あらかじめ適当なサブディレクトリを作り、そこにcdしてから下記のコマンドを実行します。
+### プログラムの導入
 
-    git clone https://git.ng.bluemix.net/akaishi/discovery-news-smp.git
+次のコマンドを実行して必要なモジュールを導入します。
 
-### Bluemix環境へのデプロイ
-cf loginコマンドではemailとpasswordを聞かれるのでbluemix登録時のemailアドレスとパスワードを指定します。  
-cf pushコマンドで指定するyour_appl_nameはBluemix上のインスタンス名であると同時に、インターネット上のURL名にもなるので、ユニークなものを指定します。  
-
-    cd discovery-news-smp
-    cf api https://api.ng.bluemix.net/
-    cf login
-    cf push <your_appl_name>
+```
+cd discovery-news-sample
+npm install
+```
 
 ### 環境変数の設定
-事前にコピペした情報を使って下記のコマンドを発行し、環境変数の設定を行います。　　
 
-    cf set-env <your_appl_name> environment_id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  
-    cf set-env <your_appl_name> collection_id  xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  
-    cf restage <your_appl_name>
+カレントディレクトリにあるlocal.env.sampleをlocal.envにコピーします。  
+  
+```
+cp local.env.sample local.env
+```
+  
+local.envをテキストエディタで開いて、下記の項目にそれぞれの値を設定して下さい。(VERSION_DATEは現時点では最新の'2017-08-01'で決め打ち)  
+    
 
+```          
+USERNAME=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+PASSWORD=xxxxxxxxxxxx
+VERSION_DATE=2017-08-01
+```          
+設定が完了したら、次のコマンドでnode.jsを起動します。
+  
+```
+npm start
+```
+
+正常にNode.jsが起動できていれば、ブラウザから [http://localhost:6011][local_url] のURLでアプリケーションを起動できます。
+  
+
+## Bluemix環境へのデプロイ
+### プログラムの配布
+
+cf loginコマンドではemailとpasswordを聞かれるのでbluemix登録時のemailアドレスとパスワードを指定します。   
+cf pushコマンドで指定する \<your\_appl\_name\> はBluemix上のインスタンス名であると同時に、インターネット上のURL名にもなるので、ユニークなものを指定します。  
+
+```
+cd discovery-news-sample
+cf login
+cf push <your_appl_name>
+```
+  
+### 環境変数のセット
+前の手順でローカル環境でNode.jsを動かしている場合、cf pushコマンドでlocal.envファイルのコピーも行われるので、以下の手順は必要ありません。  
+この手順はローカルでのテストを省いてBluemix上で動かす場合、または継続的開発環境の設定をBluemix上で行いGithub上のソースをBluemix環境に直接デプロイする場合に必要となります。 
+  
+次の３つの環境変数の値をCloudFoundary管理画面から、「ランタイム」「環境変数」を選択して設定します。  
+  
+```          
+USERNAME=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+PASSWORD=xxxxxxxxxxxx
+VERSION_DATE=2017-08-01
+```    
+  
+![setting](readme_images/cloudfoundary-env.png)  
+  
 ### アプリケーションのURLと起動
-restageコマンドによる再構成が完了したら、下記の画面で該当するCloud Foundaryアプリケーションの「経路」のリンクをクリックするとアプリケーションが起動されます。
+環境変数を保存すると自動的に再構成が動き出します。  
+しばらくしてこれが完了したら、下記の画面で該当するCloud Foundaryアプリケーションの「経路」のリンクをクリックするとアプリケーションが起動されます。  
 
-![call-appl](readme_images/call-appl.png)
 
+![call-appl](readme_images/dashboard.png)
+
+[node_js]: https://nodejs.org/#download
 [cloud_foundry]: https://github.com/cloudfoundry/cli#downloads
 [git]: https://git-scm.com/downloads
 [sign_up]: https://bluemix.net/registration
+[local_url]: http://localhost:6011
