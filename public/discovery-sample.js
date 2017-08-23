@@ -28,6 +28,9 @@ function clear_urls(headline) {
 }
 
 function call_discovery_query( data, success, error ) {
+// 決め打ちのenvironment_id,collection_id をパラメータに追加)
+    Object.assign(data, {environment_id: 'system', collection_id: 'news'});
+// API呼出し
     $.ajax({
         type: "GET", 
         url:  "/query", 
@@ -66,23 +69,23 @@ function get_sentiment_callback(msg) {
 function get_filter_str() {
     var start_date_str = $('#query_start_date').val();
     var end_date_str = $('#query_end_date').val();
-    var start_unixtime = "";
-    var end_uinxtime = "";
+    var start_date_iso;
+    var end_date_iso;
     if ( start_date_str  ) {
-        start_unixtime = conv_date(start_date_str);
+        start_date_iso = new Date(start_date_str).toISOString();
     }
     if ( end_date_str  ) {
-        end_unixtime = conv_date(end_date_str);
+        end_date_iso = new Date(end_date_str).toISOString();    
     }
     var filter_str = "";
     if ( start_date_str ) {
         if ( end_date_str  ) {
-            filter_str = "blekko.chrondate>" + start_unixtime + ",blekko.chrondate<" + end_unixtime;
+            filter_str = "publication_date>" + start_date_iso + ",publication_date<" + end_date_iso;
         } else {
-            filter_str = "blekko.chrondate>" + start_unixtime;
+            filter_str = "publication_date>" + start_date_iso;
         }
     } else { if ( end_date_str ) {
-                filter_str = "blekko.chrondate<" + end_unixtime;
+                filter_str = "publication_date<" + end_date_iso;
             }
     }
     console.log( "filter_str: " + filter_str);
@@ -94,7 +97,7 @@ function query_sentiment() {
         query: $('#query_key').val(),
         count: 0,
         filter: get_filter_str(),
-        aggregation: "term(docSentiment.type).timeslice(blekko.chrondate,1day)"
+        aggregation: "term(enriched_text.sentiment.document.label).timeslice(publication_date,1day)"
     };
     call_discovery_query( data, 
             get_sentiment_callback, 
@@ -126,10 +129,15 @@ function get_news_callback(msg) {
 }
 
 function get_news(key, date) {
-    console.log("key: " + key + "  date: " + date);
-    var yyyymmdd = moment(date).format("YYYYMMDD");
     var formated_date = moment(date).format("YYYY-MM-DD");
-    var filter_str = "yyyymmdd:" + yyyymmdd + ",docSentiment.type:" + key ;
+    console.log("key: " + key + "  date: " + formated_date);
+    var date1 = new Date(date);
+    var date2 = new Date();
+    date2.setDate(date1.getDate() + 1);
+    var date1ISO = date1.toISOString();
+    var date2ISO = date2.toISOString();
+    var filter_str = "publication_date>" + date1ISO + ",publication_date<" + date2ISO +
+        ",enriched_text.sentiment.document.label:" + key ;
     var headline = "date: " + formated_date + "   sentiment: " + key;
     console.log(filter_str);
     clear_urls(headline);

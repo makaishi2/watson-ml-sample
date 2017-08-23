@@ -1,34 +1,40 @@
-var express = require("express");
-var app = express();
+/**
+ * Copyright 2015 IBM Corp. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-// env.jsファイルがある場合は、この設定をprocess.envにマージする
-// ローカル環境でのテスト用
-var fs = require('fs');
-if (fs.existsSync('./env.js')) {
-    Object.assign(process.env, require('./env.js'));
+'use strict';
+
+// 構成情報の取得
+const fs = require('fs');
+if (fs.existsSync('local.env')) {
+  console.log('構成情報をlocal.envから取得します');
+  require('dotenv').config({ path: 'local.env' });
+} else {
+  console.log('環境変数から構成情報を取得します');
 }
 
-// environment_id, collection_idの取得 (Discovery API呼出しの際に必要になる)
-var environment_id = process.env.environment_id;
-var collection_id =  process.env.collection_id;
-
-// appEnvの取得 (app.listenでポート指定の際に必要となる)
-var cfenv = require('cfenv');
-var appEnv = cfenv.getAppEnv();
-
 // Discoveryインスタンスの生成
-var watson = require('watson-developer-cloud');
-var discovery_credentials = appEnv.getServiceCreds('discovery-service-1');
-discovery = new watson.DiscoveryV1({
-    version_date: '2017-04-27',
-    username: discovery_credentials.username,
-    password: discovery_credentials.password
+const watson = require('watson-developer-cloud');
+const discovery = new watson.DiscoveryV1({
+    version_date: process.env.VERSION_DATE,
+    username: process.env.USERNAME,
+    password: process.env.PASSWORD
 });
 
-// httpポートのlisten(ポート番号は環境変数で指定されたものを利用)
-app.listen(appEnv.port, '0.0.0.0', function() {
-  console.log("server starting on " + appEnv.url);
-});
+const express = require("express");
+const app = express();
 
 // 静的HTMLパスの指定
 app.use(express.static(__dirname + '/public'));
@@ -37,13 +43,17 @@ app.use(express.static(__dirname + '/public'));
 // この呼出しはブラウザ側のajax関数から行われる
 app.get("/query", function(req, res, next){
 
-// req.queryに指定されているパラメータにenvironment_id, collection_idを追加する
-    var query = Object.assign({environment_id: environment_id,
-                                 collection_id: collection_id}, req.query);
 // diacovery API呼出し
-    discovery.query( query,
+    discovery.query( req.query,
         function(error, data) {
             if ( data ) {res.send(data);} 
             else {console.log(error); res.send(error);}
         });
+});
+
+// VCAP_APP_PORTが設定されている場合はこのポートでlistenする (Bluemixのお作法)
+var port = process.env.VCAP_APP_PORT || 6011;
+app.listen(port, function() {
+  // eslint-disable-next-line
+  console.log('Server running on port: %d', port);
 });

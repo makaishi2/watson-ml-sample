@@ -1,13 +1,13 @@
 {
   "name": "news-sample",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "discovery news sample",
   "main": "app.js",
   "dependencies": {
-    "cfenv": "^1.0.4",
+    "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "fs": "0.0.1-security",
-    "watson-developer-cloud": "^2.32.0"
+    "watson-developer-cloud": "^2.39.0"
   },
   "repository": {},
   "license": "Apache-2.0",
