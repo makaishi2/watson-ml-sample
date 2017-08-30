@@ -1,4 +1,8 @@
 ---
+declared-services:
+  discovery-service-1:
+    label: discovery
+    plan: free
 applications:
 - command: npm start
   path: .

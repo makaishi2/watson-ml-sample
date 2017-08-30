@@ -11,6 +11,49 @@
 デモ画面  
 ![デモ](readme_images/news-demo.gif)
 
+# Bluemix環境への自動導入
+最も簡単にBluemix上にデモ環境を作りたい場合は、「自動導入」をお勧めします。  
+その場合、以下の手順に従って下さい。 
+
+## 事前準備
+Bluemixアカウントを持っていない場合は [Bluemixアカウントを作る][sign_up] に従い、Bluemixアカウントを作成します。  
+Bluemixアカウントを使って、 [Bluemixダッシュボード][bluemix_dashboard] を表示させて下さい。
+
+## サービス・インスタンスの自動生成
+  
+- 次のボタンを押して下さい。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://git.ng.bluemix.net/akaishi/discovery-news-smp)
+
+
+- 下の画面が表示されたら「アプリ名」をわかりやすいものに変更し(アプリケーションのURLの一部になります) 、「デプロイ」ボタンをおします。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](readme_images/build-step1.png)
+
+
+* このボタンを押すことにより次の処理が自動的に行われます。
+  - CloudFoundaryアプリケーションの作成
+  - Watson APIサービスのVisual Recognitionインスタンスの作成
+  - Visual RecognitionインスタンスとCloudFoundryアプリケーションのバインド
+- 次の画面が表示されたら一番右の「Delivery Pipeline」を選択します。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](readme_images/build-step2.png)
+
+- 下図のようにBuild StageとDeploy Stageの両方が「成功」となればアプリケーションのビルドは成功です。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](readme_images/build-step3.png)
+
+- 下の画面からダッシュボードの画面を表示します。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](readme_images/goto_dashboard.png)
+
+- 赤枠で囲んだアプリケーションのリンクをクリックして、アプリケーションを起動します。  
+※　Visual Recognitionのインスタンスを作成してからAPIキーが有効になるまで数分かかるので、アプリケーション作成直後はエラーになります。5分程度待ってからアプリケーションを起動するようにして下さい。
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](readme_images/goto_appl.png)
+
+
+
 ## 事前準備
 ### Bluemixアカウントの準備
    [Bluemixアカウントを作る][sign_up] か、あるいは既存のBluemixアカウントを利用します。
@@ -122,3 +165,5 @@ VERSION_DATE=2017-08-01
 [git]: https://git-scm.com/downloads
 [sign_up]: https://bluemix.net/registration
 [local_url]: http://localhost:6011
+[bluemix_dashboard]: https://console.bluemix.net/dashboard/
+
