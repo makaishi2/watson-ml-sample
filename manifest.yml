@@ -2,7 +2,7 @@
 declared-services:
   discovery-service-1:
     label: discovery
-    plan: free
+    plan: lite
 applications:
 - command: npm start
   path: .
