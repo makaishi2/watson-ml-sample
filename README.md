@@ -17,7 +17,7 @@
 
 ## 事前準備
 Bluemixアカウントを持っていない場合は [Bluemixアカウントを作る][sign_up] に従い、Bluemixアカウントを作成します。  
-Bluemixアカウントを使って、 [Bluemixダッシュボード][bluemix_dashboard] を表示させて下さい。
+Bluemixアカウントでログインして、 [Bluemixダッシュボード][bluemix_dashboard] を表示させて下さい。
 
 ## サービス・インスタンスの自動生成
   
