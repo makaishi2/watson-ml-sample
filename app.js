@@ -26,9 +26,7 @@ if (fs.existsSync('local.env')) {
 // Discoveryインスタンスの生成
 const watson = require('watson-developer-cloud');
 const discovery = new watson.DiscoveryV1({
-    version_date: 2017_08_01
-//    username: process.env.USERNAME,
-//    password: process.env.PASSWORD
+    version_date: '2017-08-01'
 });
 
 const express = require("express");
