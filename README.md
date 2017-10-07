@@ -1,5 +1,7 @@
 # Discovery News サンプルアプリケーション
+Watson Discovery Newsは、最新の情報検索・探索用APIであるWatson Discovery上にIBMが自ら世界中のニュースを収集し、情報サービスとして提供しているものです。
 このアプリケーションはWatson Discovery Newsの機能を簡単に確認するためのものです。  
+(現時点では英語版のサービスとなっています)
 
 * 次のようなことが可能です
     * 検索条件に会社名を入力し、その会社に関係するニュースの評判分析を行います
@@ -120,7 +122,8 @@ local.envをテキストエディタで開いて、下記の項目にそれぞ�
 ```          
 USERNAME=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 PASSWORD=xxxxxxxxxxxx
-```          
+```    
+      
 設定が完了したら、次のコマンドでnode.jsを起動します。
   
 ```
