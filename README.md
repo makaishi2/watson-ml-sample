@@ -50,7 +50,8 @@ $ cf login
 ![](readme_images/cf-login.png)  
 
 ## Discoveryサービスの作成
-以下のコマンドでDiscoveryサービスを作成します。
+disocovery-1のサービスをまだ作成していない場合、以下のコマンドでDiscoveryサービスを作成します。
+作成済みの場合、以下の手順は不要です。
 
 ```
 $ cf create-service discovery lite discovery-1
