@@ -1,11 +1,10 @@
 ---
 declared-services:
-  discovery-service-1:
+  discovery-1:
     label: discovery
     plan: lite
 applications:
-- command: npm start
-  path: .
+- path: .
   memory: 128M
   services:
-  - discovery-service-1
+  - discovery-1
