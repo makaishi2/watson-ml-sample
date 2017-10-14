@@ -1,4 +1,4 @@
-# Discovery News サンプルアプリケーション
+# Discovery News サンプルアプリ (評判分析)
 Watson Discovery Newsは、情報検索・探索用APIであるWatson Discovery上にIBMが自ら世界中のニュースを収集し、情報サービスとして提供しているものです。  
 このアプリケーションはWatson Discovery Newsの機能を簡単に確認するためのものです。  
 (Discoveryは日本語対応済みですが、Discovery Newsは現時点では英語版のサービスとなっています)
@@ -89,7 +89,7 @@ https://<service_name>.mybluemix.net/
 ローカルにNode.jsを導入する必要があります。
 [Node.jsダウンロード][node_js]からダウンロードして下さい。
 * 認証情報の確認  
-BluemixダッシュボードからConversationサービスの管理画面を開き、接続用のusername, passwordを調べてテキストエディタなどにコピーします。
+BluemixダッシュボードからDiscoveryサービスの管理画面を開き、接続用のusername, passwordを調べてテキストエディタなどにコピーします。
 * local.envファイルの設定
 次のコマンドでlocal.envファイルの雛形からlocal.envをコピーし、エディタで調べたusername, passwordを設定します。
 
