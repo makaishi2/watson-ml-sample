@@ -102,7 +102,7 @@ DISCOVERY_USERNAME=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 DISCOVERY_PASSWORD=xxxxxxxxxxxx
 ```
 
-* Node.jsアプリケーションの導入、実行
+* Node.jsアプリケーションの導入、実行  
 以下のコマンドでアプリケーションの導入、実行を行います。
 
 ```
