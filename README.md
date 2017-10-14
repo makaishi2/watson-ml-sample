@@ -99,7 +99,8 @@ $ cp local.env.sample local.env
 
 ```
 DISCOVERY_USERNAME=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-DISCOVERY_PASSWORD=xxxxxxxxxxxx```
+DISCOVERY_PASSWORD=xxxxxxxxxxxx
+```
 
 * Node.jsアプリケーションの導入、実行
 以下のコマンドでアプリケーションの導入、実行を行います。
@@ -111,7 +112,6 @@ $ npm start
 
 ### (参考) Bluemixとローカル両方で動くアプリの作り方
 qittaに別記事 [Bluemix上のWatsonアプリをローカル環境で開発・デバッグする際のTips](https://qiita.com/makaishi2/items/06dd45ae50891d66aef5) をあげておきましたので、関心ある方はこちらも参考にされて下さい。
-
 
 [cloud_foundry]: https://github.com/cloudfoundry/cli#downloads
 [git]: https://git-scm.com/downloads
