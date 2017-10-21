@@ -35,7 +35,7 @@ Githubからアプリケーションのソースをダウンロードします�
 
 ```
 $ cd (適当なサブディレクトリ)
-$ git clone https://git.ng.bluemix.net/akaishi/discovery-news-sentiment.git
+$ git clone https://github.com/makaishi2/discovery-news-sentiment.git
 $ cd discovery-news-sentiment
 ```
 
