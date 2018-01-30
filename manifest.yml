@@ -1,10 +1,10 @@
 ---
 declared-services:
-  discovery-1:
-    label: discovery
+  machine-learning-1:
+    label: pm-20
     plan: lite
 applications:
 - path: .
   memory: 128M
   services:
-  - discovery-1
+  - machine-learning-1
