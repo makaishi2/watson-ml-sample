@@ -1,9 +1,6 @@
 // グローバル変数定義
 
-
 function call_ml_predict( data, success, error ) {
-// 決め打ちのenvironment_id,collection_id をパラメータに追加)
-    Object.assign(data, {environment_id: 'system', collection_id: 'news'});
 // API呼出し
     $.ajax({
         type: "GET", 
@@ -15,6 +12,8 @@ function call_ml_predict( data, success, error ) {
 }
 
 function predict_callback(msg) {
+    $('#pos_rate').text(msg[1]);
+    $('#neg_rate').text(msg[0]);
     console.log(msg);
 }    
 

@@ -14,9 +14,6 @@ a { font-size: 12px;}
 div.tooltip { position: absolute; text-align: center; width: 60px; height: 28px;
     padding: 2px; font: 10px sans-serif; background: lightsteelblue;
     border: 0px; border-radius: 8px; pointer-events: none; }
-#top_area { overflow:hidden; width:100%; }
-#gr_area { float:left; width:50%; }
-#url_area { float:left; width:50%; }
 </style>
 
 
@@ -61,6 +58,8 @@ Profession:
 <br>
 <input type="submit" id="predict" value="予測">
 <hr>
+Positive Rate: <div id=pos_rate></div>
+Negative Rate: <div id=neg_rate></div>
 
 <script>
 $(function(){
