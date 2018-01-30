@@ -22,11 +22,15 @@ Githubからアプリケーションのソースをダウンロードします�
 ダウンロード後、できたサブディレクトリにcdします。
  
 
-```
+```sh
 $ cd (適当なサブディレクトリ)
-$ git clone https://github.com/makaishi2/discovery-news-sentiment.git
-$ cd discovery-news-sentiment
+$ git clone https://github.com/makaishi2/watson-ml-sample.git
+$ cd watson-ml-sample
 ```
+
+## (重要)ソースコードの修正
+ソースコードの中で一箇所、修正が必要な箇所がapp.jsにあります。
+ソースコード内に記載がありますので、それに基づいて必ず修正を行って下さい。
 
 ## CFコマンドでログイン
 CFコマンドでbluemix環境にログインします。ログイン名、パスワードはBluemixアカウント登録で登録したものを利用します。  
@@ -39,20 +43,11 @@ $ cf login
 
 ![](readme_images/cf-login.png)  
 
-## Discoveryサービスの作成
-disocovery-1のサービスをまだ作成していない場合、以下のコマンドでDiscoveryサービスを作成します。
-作成済みの場合、以下の手順は不要です。
-
-```
-$ cf create-service discovery lite discovery-1
-$ cf create-service-key discovery-1 myKey
-```
-
 ## アプリケーションのデプロイ
 
 次のコマンドを実行します。
 \<service_name\>はなんでもいいのですが、インターネット上のURLの一部となるので、ユニークな名前を指定します。  
-(例) news-sentiment-aka1
+(例) ml-sample-aka1
 
 ```
 $ cf push <service_name>
@@ -79,29 +74,27 @@ https://<service_name>.mybluemix.net/
 ローカルにNode.jsを導入する必要があります。
 [Node.jsダウンロード][node_js]からダウンロードして下さい。
 * 認証情報の確認  
-BluemixダッシュボードからDiscoveryサービスの管理画面を開き、接続用のusername, passwordを調べてテキストエディタなどにコピーします。
+BluemixダッシュボードからDiscoveryサービスの管理画面を開き、接続用のurl, username, passwordを調べてテキストエディタなどにコピーします。
 * local.envファイルの設定
 次のコマンドでlocal.envファイルの雛形からlocal.envをコピーし、エディタで調べたusername, passwordを設定します。
 
-```
+```sh
 $ cp local.env.sample local.env
 ```
 
-```
-DISCOVERY_USERNAME=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-DISCOVERY_PASSWORD=xxxxxxxxxxxx
+```sh
+WML_SERVICE_CREDENTIALS_URL=xxxxx
+WML_SERVICE_CREDENTIALS_USERNAME=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+WML_SERVICE_CREDENTIALS_PASSWORD=xxxxxxxxxxxx
 ```
 
 * Node.jsアプリケーションの導入、実行  
 以下のコマンドでアプリケーションの導入、実行を行います。
 
-```
+```sh
 $ npm install
 $ npm start
 ```
-
-### (参考) Bluemixとローカル両方で動くアプリの作り方
-qittaに別記事 [Bluemix上のWatsonアプリをローカル環境で開発・デバッグする際のTips](https://qiita.com/makaishi2/items/06dd45ae50891d66aef5) をあげておきましたので、関心ある方はこちらも参考にされて下さい。
 
 [cloud_foundry]: https://github.com/cloudfoundry/cli#downloads
 [git]: https://git-scm.com/downloads
