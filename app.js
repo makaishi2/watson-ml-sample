@@ -84,7 +84,9 @@ app.get("/predict", function(req, res, next){
                 payload.values[0][1] = Number(payload.values[0][1]);
                 payload = JSON.stringify(payload);
                 console.log(payload);
-                const scoring_url = "https://ibm-watson-ml.mybluemix.net/v3/wml_instances/628ae389-745d-4612-85f4-41545b0b3e18/published_models/31dc3c3e-b58c-4892-97e3-9f947875d2d0/deployments/a9d85d60-3496-4031-8a51-af03650ea8f2/online";
+                // 次の行は環境により異なります。
+                // 自分のWatson MLのimplementationタブをコピペして自分の環境のURLを取得して下さい。
+                const scoring_url = "https://ibm-watson-ml.mybluemix.net/v3/wml_instances/xxxxx";
     
                 apiPost(scoring_url, wmlToken, payload, function (resp) {
                     var response;
