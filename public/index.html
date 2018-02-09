@@ -25,25 +25,26 @@ div.tooltip { position: absolute; text-align: center; width: 60px; height: 28px;
 
 <h2>Watson MLデモ</h2>
 <h3>テント購買予測</h3>
+<img src='picture.png' width='270' height='170'>
 <hr>
 予測対象<br>
-Age:
+年齢:
 <input text id="age" value='40'>
 <br>
-Gender: 
+性別: 
 <select id="gender">
     <option>Male</option>
     <option>Famale</option>
 </select>
 <br>
-Marital Status:
+既婚・独身:
 <select id="marital_status">
     <option>Married</option>
     <option>Single</option>
     <option>Unspecified</option>
 </select>
 <br>
-Profession: 
+職業: 
 <select id="profession">
     <option>Executive</option>
     <option>Hospitality</option>
@@ -58,8 +59,9 @@ Profession:
 <br>
 <input type="submit" id="predict" value="予測">
 <hr>
-Positive Rate: <div id=pos_rate></div>
-Negative Rate: <div id=neg_rate></div>
+Positive Rate: <label id=pos_rate></label>
+<br>
+Negative Rate: <label id=neg_rate></label>
 
 <script>
 $(function(){

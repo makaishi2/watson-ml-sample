@@ -4,11 +4,12 @@
   "description": "watson ml sample",
   "main": "app.js",
   "dependencies": {
+    "async": "^2.6.0",
     "btoa": "^1.1.2",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "fs": "0.0.1-security",
-    "xmlhttprequest": "^1.8.0"
+    "request": "^2.83.0"
   },
   "repository": {},
   "license": "Apache-2.0",

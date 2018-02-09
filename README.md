@@ -1,5 +1,11 @@
 # Watson Machine Learning サンプルアプリ
 
+## アプリケーションの目的
+[Watson Machine Learing チュートリアルを試してみる](https://qiita.com/makaishi2/items/dd9eafcbe824ef9482fd)の記事で作ったWatson Machine Learningによる機械学習モデルのWebサービスを呼び出すサンプルアプリケーションです。
+
+
+![](readme_images/screen-image.png)
+
 ## 前提
 Watson DSX, Watson MLの導入と、機械学習モデルの作成まで済んでいることを前提とします。
 
@@ -28,10 +34,6 @@ $ git clone https://github.com/makaishi2/watson-ml-sample.git
 $ cd watson-ml-sample
 ```
 
-## (重要)ソースコードの修正
-ソースコードの中で一箇所、修正が必要な箇所がapp.jsにあります。
-ソースコード内に記載がありますので、それに基づいて必ず修正を行って下さい。
-
 ## CFコマンドでログイン
 CFコマンドでbluemix環境にログインします。ログイン名、パスワードはBluemixアカウント登録で登録したものを利用します。  
 ログインに成功すると、次のような画面となります。  
@@ -51,6 +53,14 @@ $ cf login
 
 ```
 $ cf push <service_name>
+```
+
+## 環境変数の設定
+次のコマンドで機械学習モデルのエンドポイントURLを設定します。
+
+```
+$ cf set-env <service_name> WML_ENDPOINT_URL https://ibm-watson-ml.mybluemix.net/v3/..
+$ cf restage <service_name>
 ```
 
 ## アプリケーションのURLと起動

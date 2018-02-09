@@ -1,15 +1,15 @@
 'use strict';
 
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const btoa = require("btoa");
-const wml_credentials = new Map();
-
-const express = require("express");
+const btoa = require('btoa');
+const async = require('async');
+const request = require('request');
+const express = require('express');
 const app = express();
 
-var wml_service_credentials_url;
-var wml_service_credentials_username;
-var wml_service_credentials_password;
+var credentials_url;
+var credentials_username;
+var credentials_password;
+var wml_endpoint_url;
 
 // 静的HTMLパスの指定
 app.use(express.static(__dirname + '/public'));
@@ -19,100 +19,92 @@ const fs = require('fs');
 if (fs.existsSync('local.env')) {
   console.log('構成情報をlocal.envから取得します');
   require('dotenv').config({ path: 'local.env' });
-  wml_service_credentials_url = process.env.WML_SERVICE_CREDENTIALS_URL;
-  wml_service_credentials_username = process.env.WML_SERVICE_CREDENTIALS_USERNAME;
-  wml_service_credentials_password = process.env.WML_SERVICE_CREDENTIALS_PASSWORD;
+  credentials_url = process.env.WML_SERVICE_CREDENTIALS_URL;
+  credentials_username = process.env.WML_SERVICE_CREDENTIALS_USERNAME;
+  credentials_password = process.env.WML_SERVICE_CREDENTIALS_PASSWORD;
 } else {
   console.log('構成情報を環境変数から取得します');
   var env = JSON.parse(process.env.VCAP_SERVICES);
   var vcap = env['pm-20'];
-  wml_service_credentials_url = vcap[0].credentials.url;
-  wml_service_credentials_username = vcap[0].credentials.username;
-  wml_service_credentials_password = vcap[0].credentials.password;
+  credentials_url = vcap[0].credentials.url;
+  credentials_username = vcap[0].credentials.username;
+  credentials_password = vcap[0].credentials.password;
 }
 
-wml_credentials.set("url", wml_service_credentials_url);
-wml_credentials.set("username", wml_service_credentials_username);
-wml_credentials.set("password", wml_service_credentials_password);
-
-function apiGet(url, username, password, loadCallback, errorCallback){
-    const oReq = new XMLHttpRequest();
-    const tokenHeader = "Basic " + btoa((username + ":" + password));
-    const tokenUrl = url + "/v3/identity/token";
-
-    oReq.addEventListener("load", loadCallback);
-    oReq.addEventListener("error", errorCallback);
-    oReq.open("GET", tokenUrl);
-    oReq.setRequestHeader("Authorization", tokenHeader);
-    oReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    oReq.send();
-}
-
-function apiPost(scoring_url, token, payload, loadCallback, errorCallback){
-    const oReq = new XMLHttpRequest();
-    oReq.addEventListener("load", loadCallback);
-    oReq.addEventListener("error", errorCallback);
-    oReq.open("POST", scoring_url);
-    oReq.setRequestHeader("Accept", "application/json");
-    oReq.setRequestHeader("Authorization", token);
-    oReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    console.log(payload);
-    oReq.send(payload);
-}
-
-// Callback関数が入れ子になるので、戻り値用の変数はここで定義しておく
-var ret = '';
+wml_endpoint_url = process.env.WML_ENDPOINT_URL;
 
 // ML呼出し
 app.get("/predict", function(req, res, next){
     console.log("started predict");
-    apiGet(wml_credentials.get("url"),
-        wml_credentials.get("username"),
-        wml_credentials.get("password"),
-        function (res) {
-            let parsedGetResponse;
-            try {
-                parsedGetResponse = JSON.parse(this.responseText);
-            } catch(ex) {
-                // TODO: handle parsing exception
+    async.waterfall([
+        // step 1 token取得
+        function (callback) {
+            const tokenHeader = "Basic " + btoa((credentials_username + ":" + credentials_password));
+            const tokenUrl = credentials_url + "/v3/identity/token";
+            
+            var headers = {
+                Authorization: tokenHeader,
+                'Content-Type': "application/json;charset=UTF-8"
             }
-            if (parsedGetResponse && parsedGetResponse.token) {
-                const token = parsedGetResponse.token
-                const wmlToken = "Bearer " + token;
-
-                var payload = req.query;
-                payload.values[0][1] = Number(payload.values[0][1]);
-                payload = JSON.stringify(payload);
-                console.log(payload);
-                // 次の行は環境により異なります。
-                // 自分のWatson MLのimplementationタブをコピペして自分の環境のURLを取得して下さい。
-                const scoring_url = "https://ibm-watson-ml.mybluemix.net/v3/wml_instances/xxxxx";
-    
-                apiPost(scoring_url, wmlToken, payload, function (resp) {
-                    var response;
-                    try {
-                        response = JSON.parse(this.responseText);
-                    } catch (ex) {
-                        // TODO: handle parsing exception
-                    }
-                    console.log("Scoring response");
-                    console.log(response)
-                    // 下記の場所が、確信度になる
-                    ret = response.values[0][6];
-                    console.log(ret);
-                }, function (error) {
+            var options = {
+                url: tokenUrl,
+                method: 'GET',
+                headers: headers
+            }
+            // リクエスト実行
+            console.log("before get token");
+            request(options, function (error, response, body) {
+                if ( error ) {
+                    console.log('error');
                     console.log(error);
-                });
-            } else {
-                console.log("Failed to retrieve Bearer token");
+                    callback(1, '1st error');
+                } else {
+                    console.log('get token normal end');
+                    const wmlToken = "Bearer " + JSON.parse(body).token;
+                    callback(null, wmlToken);
+                }
+            })
+        },
+        // step 2 予測値取得
+        function (arg, callback) {
+            const wmlToken = arg;
+            var payload = req.query;
+            payload.values[0][1] = Number(payload.values[0][1]);
+
+            var headers = {
+                Authorization: wmlToken,
+                Accept: "application/json",
+                'Content-Type': "application/json;charset=UTF-8"
             }
-        }, function (err) {
+            var options = {
+                url: wml_endpoint_url,
+                method: 'POST',
+                headers: headers,
+                json: payload
+            }
+            console.log("before predict");
+            request(options, function (error, response, body) {
+                if ( error ) {
+                    console.log('2nd error');
+                    console.log(error);
+                    callbak(1, '2nd error');
+                } else {
+                    console.log('2nd normal end');
+                    var retValue = body.values[0][6];
+                    callback(null, retValue);
+                }
+            })
+        },
+    ], function (err, results) {
+        if (err) {
+            console.log("Error")
             console.log(err);
-        });
-
-// 戻り値
-    res.send(ret);
-
+        } else {
+            console.log("Normal End!");
+            console.log(results);
+            res.send(results);
+        }
+    });
 });
 
 // VCAP_APP_PORTが設定されている場合はこのポートでlistenする (Bluemixのお作法)
