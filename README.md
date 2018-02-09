@@ -92,9 +92,12 @@ $ cp local.env.sample local.env
 ```
 
 ```sh
-WML_SERVICE_CREDENTIALS_URL=xxxxx
-WML_SERVICE_CREDENTIALS_USERNAME=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-WML_SERVICE_CREDENTIALS_PASSWORD=xxxxxxxxxxxx
+WML_URL=xxxx
+WML_ACCESS_KEY=xxxx
+WML_USERNAME=xxxx
+WML_PASSWORD=xxxx
+WML_INSTANCE_ID=xxxx
+SCORING_URL=xxxx
 ```
 
 * Node.jsアプリケーションの導入、実行  
