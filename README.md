@@ -3,8 +3,7 @@
 ## アプリケーションの目的
 [Watson Machine Learing チュートリアルを試してみる](https://qiita.com/makaishi2/items/dd9eafcbe824ef9482fd)の記事で作ったWatson Machine Learningによる機械学習モデルのWebサービスを呼び出すサンプルアプリケーションです。
 
-
-![](readme_images/screen-image.png)
+![](readme_images/screen-image.png)  
 
 ## 前提
 Watson DSX, Watson MLの導入と、機械学習モデルの作成まで済んでいることを前提とします。
